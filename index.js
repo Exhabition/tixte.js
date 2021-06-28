@@ -111,14 +111,14 @@ class Client {
      * @param {Number} domain The domain to upload the image to.
      * @returns Response data from API
      */
-    async uploadImage(imagePath, domain) {
+    async uploadImage(imagePath, domain, extension = "png") {
         if (!imagePath || typeof (imagePath) != "string" && typeof (imagePath) != "object") return new Error(`"${imagePath}" is not a valid value for "imagePath"`);
         if (!domain || typeof (domain) != "string") return new Error(`"${domain}" is not a valid value for "domain"`);
 
         try {
             let fd = new FormData()
             let file = typeof (imagePath) === "string" ? fs.createReadStream(imagePath) : new Buffer(imagePath);
-            fd.append("file", file, "statsImage.png")
+            fd.append("file", file, `image.${extension}`)
 
             const res = await post("https://api.tixte.com/v1/upload", fd, {
                 headers: {
