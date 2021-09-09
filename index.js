@@ -117,7 +117,7 @@ class Client {
 
         try {
             let fd = new FormData()
-            let file = typeof (imagePath) === "string" ? fs.createReadStream(imagePath) : new Buffer(imagePath);
+            let file = typeof (imagePath) === "string" ? fs.createReadStream(imagePath) : Buffer.from(imagePath);
             fd.append("file", file, `image.${extension}`)
 
             const res = await post("https://api.tixte.com/v1/upload", fd, {
