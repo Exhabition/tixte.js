@@ -109,16 +109,20 @@ class Client {
      * Uploads an image
      * @param {Number} imagePath Path of the image to upload.
      * @param {Number} domain The domain to upload the image to.
+     * @param {Object} options Options in case you want to give the image a custom name
+     * @param {String} options.extension A valid extension for the file (max 18 characters)
+     * @param {String} options.fileName A valid path safe filename (max 128 characters)
      * @returns Response data from API
      */
-    async uploadImage(imagePath, domain, extension = "png") {
+    async uploadImage(imagePath, domain, options = { extension: "png", fileName: `Image-${Date.now()}`}) {
         if (!imagePath || typeof (imagePath) != "string" && typeof (imagePath) != "object") return new Error(`"${imagePath}" is not a valid value for "imagePath"`);
         if (!domain || typeof (domain) != "string") return new Error(`"${domain}" is not a valid value for "domain"`);
+        if (!options || typeof (options) != "object" || !options.extension || !options.fileName) return new Error(`"options is not a valid object or is missing keys"`)
 
         try {
             let fd = new FormData()
             let file = typeof (imagePath) === "string" ? fs.createReadStream(imagePath) : Buffer.from(imagePath);
-            fd.append("file", file, `image.${extension}`)
+            fd.append("file", file, `${options.fileName}.${options.extension}`)
 
             const res = await post("https://api.tixte.com/v1/upload", fd, {
                 headers: {
